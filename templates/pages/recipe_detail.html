@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<!-- Begin page content -->
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1>{{ pagename }}</h1>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+        <fieldset disabled>
+        <div class="row disabled">
+            <div class="col col-6">
+                Название: <input type="text" value="{{ recipe.title }}" class="form-control">
+            </div>
+
+            <div class="col col-2">
+                Тип:<input type="text" {% if recipe.type %} value="{{ recipe.type }}" {% endif %} class="form-control">
+            </div>
+
+            <div class="col col-4">
+                Дата создания:<input type="text" value="{{ recipe.published_date }}" class="form-control">
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+            <div class="col">
+                <div class="p-2 h-100" style="border:1px solid #ced4da; border-radius:5px;">
+                    <p>
+                        {{ recipe.text|linebreaks }}
+                    </p>
+                    {% if recipe.image %} 
+                        <p>
+                            <img src="{{ recipe.image.url }}" class="img-responsive" style="width: 100%; float: left; margin-right: 10px;">
+                        </p>
+                    {% endif %}
+                </div>  
+
+            </div>
+        </div>
+        </fieldset>
+        </div>
+    </div>
+</div>
+{% endblock %}

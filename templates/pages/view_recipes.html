@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col text-left" style="margin-top: 10px; margin-bottom: 10px">
+            <h2>{{ pagename }}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Автор</th>
+                    <th scope="col">Тип</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for recipe in recipes %}
+                    <tr>
+                        <td><a href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a>
+                            {% if request.user == recipe.author %}
+                            <a style="padding-left: 20px" href="{% url 'recipe-edit' recipe.id %}">
+                                <i style="color: grey" class="fas fa-edit"></i>
+                            </a>
+                            <a style="padding-left: 5px" href="{% url 'recipe-delete' recipe.id %}">
+                                <i style="color: grey" class="fa-solid fa-trash"></i>
+                            </a>
+                            
+                            {% endif %}
+                        </td>
+                        <td>{{ recipe.published_date }}</td>
+                        <td>{{ recipe.author.username }}</td>
+                        <td>{{ recipe.type }}</td>   
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div align="right">
+                <i style="color: gray;">Всего: {{ count }}</i>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
