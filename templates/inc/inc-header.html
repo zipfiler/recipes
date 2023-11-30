@@ -11,24 +11,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    {% if request.user.is_authenticated %}
                     <li class="form-inline">
-                        <a class="btn btn-outline-secondary" href="{% url 'recipes-add'%}">
-                            Добавить рецепт
-                        </a>
-                    </li>
-                    {% endif %}
-                    <li class="form-inline">
-                        <a class="btn btn-outline-info" href="{% url 'recipes-list'%}">
+                        <a class="nav-link" style="color: #EBEBEB" href="{% url 'recipes-list'%}">
                             Книга рецептов
                         </a>
                     </li>
                     {% if request.user.is_authenticated %}
-                    <li class="form-inline">
-                        <a class="btn btn-outline-info" href="{% url 'my-recipes'%}">
-                            Мои рецепты
-                        </a>
-                    </li>
+                        <li class="form-inline">
+                            <a class="nav-link" style="color: #EBEBEB" href="{% url 'my-recipes'%}">
+                                Мои рецепты
+                            </a>
+                        </li>
+                        <li class="form-inline">
+                            <a class="nav-link" href="{% url 'recipes-add'%}">
+                                Добавить рецепт
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
