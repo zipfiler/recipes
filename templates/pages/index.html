@@ -4,23 +4,15 @@
         <div class="row">
             <div class="col text-center">
                 <h1>{{ pagename }}</h1>
-                <hr>
             </div>
         </div>
         <div class="row">
             <div class="col">
                 {% if request.user.is_authenticated %}
                     <p>Привет, {{ request.user.username }}!
-                    <hr>
-                    <div class="row mt-3">
-                        <div class="col-4 offset-4">
-                            <a href="{% url 'recipes-add'%}" class="btn btn-secondary btn-block">Добавить рецепт</a>
-                        </div>
-                    </div>
                 {% else %}
                     <p>Добро пожаловать!
-                    <p>На этом сайте ты сможешь сохранить свои кулинарные заметки.<br>
-                    <hr>
+                    <p>На этом сайте ты сможешь сохранить свои кулинарные заметки.
                 {% endif %}
             </div>
         </div>

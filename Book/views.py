@@ -41,16 +41,31 @@ def add_recipe_page(request):
                 recipe.save()
             return redirect('recipes-list')
         return render(request,'pages/add_recipe.html', {'form': form})
-        
-    
+
+
 def recipes_page(request):
-    recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
+    public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
+    if request.user.is_authenticated:
+        user_recipes = Recipe.objects.filter(author=request.user)
+        recipes = public_recipes | user_recipes
+    else:
+        recipes = public_recipes
     context = {
-        'pagename': 'Список рецептов',
+        'pagename': 'Все рецепты',
         'recipes': recipes,
         'count': recipes.count()
         }
     return render(request, 'pages/view_recipes.html', context)
+
+    
+# def recipes_page(request):
+#     recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
+#     context = {
+#         'pagename': 'Список рецептов',
+#         'recipes': recipes,
+#         'count': recipes.count()
+#         }
+#     return render(request, 'pages/view_recipes.html', context)
     
 
 def recipe_detail(request, recipe_id):
