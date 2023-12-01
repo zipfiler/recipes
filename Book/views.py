@@ -45,27 +45,13 @@ def add_recipe_page(request):
 
 def recipes_page(request):
     public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
-    if request.user.is_authenticated:
-        user_recipes = Recipe.objects.filter(author=request.user)
-        recipes = public_recipes | user_recipes
-    else:
-        recipes = public_recipes
+    recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
     context = {
         'pagename': 'Все рецепты',
         'recipes': recipes,
         'count': recipes.count()
         }
     return render(request, 'pages/view_recipes.html', context)
-
-    
-# def recipes_page(request):
-#     recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
-#     context = {
-#         'pagename': 'Список рецептов',
-#         'recipes': recipes,
-#         'count': recipes.count()
-#         }
-#     return render(request, 'pages/view_recipes.html', context)
     
 
 def recipe_detail(request, recipe_id):
