@@ -29,8 +29,13 @@ class RecipesListView(ListView):
 
 class UserRecipesListView(RecipesListView):
     def get_queryset(self):
-        queryset = super().get_queryset().filter(author=self.request.user)
-        return queryset
+        return super().get_queryset().filter(author=self.request.user)
+
+
+class AllRecipesListView(UserRecipesListView):
+    def get_queryset(self):
+        public_recipes = super(RecipesListView, self).get_queryset().filter(private_choise=PrivateChoise.PUBLIC)
+        return public_recipes if not self.request.user.is_authenticated else public_recipes | super(AllRecipesListView, self).get_queryset()
 
 
 @login_required()

@@ -10,7 +10,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.IndexView.as_view(), name='home'),
     path('recipes/add', views.add_recipe_page, name='recipes-add'),
-    path('recipes/list', views.RecipesListView.as_view(), name='recipes-list'),
+    path('recipes/list', views.AllRecipesListView.as_view(), name='recipes-list'),
     path('recipes/my', views.UserRecipesListView.as_view(), name='my-recipes'),
     path('recipe/<int:recipe_id>', views.recipe_detail, name='recipe-detail'),
     path('recipe/<int:recipe_id>/delete', views.recipe_delete, name='recipe-delete'),
