@@ -1,4 +1,6 @@
-from django.http import Http404, HttpResponseRedirect
+from typing import Any
+from django.db.models.query import QuerySet
+from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
@@ -13,7 +15,6 @@ from Book.forms import UserRegistrationForm, RecipeForm
 
 class IndexView(TemplateView):
     template_name = 'pages/index.html'
-    # title = 'Книга рецептов'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -21,9 +22,15 @@ class IndexView(TemplateView):
         return context
 
 
-# class RecipesListView(ListView):
-#     model = Recipe
-#     template_name = 'pages/view_recipes.html'
+class RecipesListView(ListView):
+    model = Recipe
+    template_name = 'pages/view_recipes.html'
+
+
+class UserRecipesListView(RecipesListView):
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(author=self.request.user)
+        return queryset
 
 
 @login_required()
@@ -67,17 +74,6 @@ def add_recipe_page(request):
             return redirect('recipes-list')
         return render(request,'pages/add_recipe.html', {'form': form})
 
-
-# def recipes_page(request):
-#     public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
-#     recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
-#     context = {
-#         'pagename': 'Все рецепты',
-#         'recipes': recipes,
-#         'count': recipes.count()
-#         }
-#     return render(request, 'pages/view_recipes.html', context)
-    
 
 def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
