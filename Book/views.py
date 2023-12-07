@@ -3,16 +3,30 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.list import ListView
 
 from Book.models import Recipe, PrivateChoise
 from Book.forms import UserRegistrationForm, RecipeForm
 
 
-def index_page(request):
-    return render(request, 'pages/index.html')
+class IndexView(TemplateView):
+    template_name = 'pages/index.html'
+    # title = 'Книга рецептов'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = 'Книга рецептов'
+        return context
 
 
-@login_required(login_url='login')
+# class RecipesListView(ListView):
+#     model = Recipe
+#     template_name = 'pages/view_recipes.html'
+
+
+@login_required()
 def my_recipes(request):
     recipes = Recipe.objects.filter(author=request.user)
     context = {
@@ -23,7 +37,18 @@ def my_recipes(request):
     return render(request, 'pages/view_recipes.html', context)
 
 
-@login_required(login_url='login')
+def recipes_page(request):
+    public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
+    recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
+    context = {
+        'pagename': 'Все рецепты',
+        'recipes': recipes,
+        'count': recipes.count()
+        }
+    return render(request, 'pages/view_recipes.html', context)
+
+
+@login_required()
 def add_recipe_page(request):
     if request.method == 'GET':
         form = RecipeForm()
@@ -43,15 +68,15 @@ def add_recipe_page(request):
         return render(request,'pages/add_recipe.html', {'form': form})
 
 
-def recipes_page(request):
-    public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
-    recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
-    context = {
-        'pagename': 'Все рецепты',
-        'recipes': recipes,
-        'count': recipes.count()
-        }
-    return render(request, 'pages/view_recipes.html', context)
+# def recipes_page(request):
+#     public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
+#     recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
+#     context = {
+#         'pagename': 'Все рецепты',
+#         'recipes': recipes,
+#         'count': recipes.count()
+#         }
+#     return render(request, 'pages/view_recipes.html', context)
     
 
 def recipe_detail(request, recipe_id):
