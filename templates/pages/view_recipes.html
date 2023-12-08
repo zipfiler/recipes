@@ -22,7 +22,7 @@
                     {% for recipe in object_list %}
                     <tr>
                         <td><a href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a>
-                            {% if request.user == recipe.author %}
+                            {% comment %} {% if request.user == recipe.author %}
                             <a style="padding-left: 20px" href="{% url 'recipe-edit' recipe.id %}">
                                 <i style="color: grey" class="fas fa-edit"></i>
                             </a>
@@ -30,7 +30,7 @@
                                 <i style="color: grey" class="fa-solid fa-trash"></i>
                             </a>
                             
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </td>
                         <td>{{ recipe.published_date }}</td>
                         <td>{{ recipe.author.username }}</td>

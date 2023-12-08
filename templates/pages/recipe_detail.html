@@ -41,12 +41,20 @@
                             <img src="{{ recipe.image.url }}" class="img-responsive" style="width: 100%; float: left; margin-right: 10px;">
                         </p>
                     {% endif %}
+                    
+                
                 </div>  
-
             </div>
         </div>
         </fieldset>
+        <br>
+                {% if request.user == recipe.author %}
+                    <button type="button" class="btn btn-outline-secondary btn-sm"><a style="color: black" href="{% url 'recipe-edit' recipe.id %}">Редактировать</a></button>
+                    <button type="button" class="btn btn-outline-danger btn-sm"><a style="color: darkred" href="{% url 'recipe-delete' recipe.id %}">Удалить</a></button>
+                {% endif %}
         </div>
     </div>
+        <br>
 </div>
+
 {% endblock %}
