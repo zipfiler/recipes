@@ -1,4 +1,5 @@
 from typing import Any
+from django.contrib.auth.models import User
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,7 +10,9 @@ from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
+from django.views.generic import DetailView
 from django.views.generic import CreateView
+from django.views.generic.edit import UpdateView
 
 from Book.models import Recipe, PrivateChoise
 from Book.forms import UserRegistrationForm, RecipeForm
@@ -62,7 +65,7 @@ class MainRecipesListView(RecipesListView):
 #     return render(request, 'pages/view_recipes.html', context)
 
 
-class AddRecipeView(LoginRequiredMixin, CreateView):
+class RecipeCreateView(LoginRequiredMixin, CreateView):
     form_class = RecipeForm
     template_name = 'pages/add_recipe.html'
     success_url = reverse_lazy('recipes-list')
@@ -98,12 +101,35 @@ def recipe_detail(request, recipe_id):
         return render(request, 'pages/recipe_detail.html', {'recipe': recipe})
     else:
         raise Http404
+    
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = 'pages/recipe_detail.html'
+
+    # def get_object(self):
+    #     recipe = super().get_object()
+        # if not recipe.private_choise == 'PB' or self.request.user == recipe.author:
+        #     raise Http404
+        # return recipe
      
 
 def recipe_delete(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
     recipe.delete()
     return redirect('recipes-list')
+
+
+class RecipeUpdateView(UpdateView):
+    model = Recipe
+    form_class = RecipeForm
+    template_name = 'pages/add_recipe.html'
+    success_url = reverse_lazy('recipes-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = 'Редактирование'
+        return context
 
 
 def recipe_edit(request, recipe_id):
@@ -118,19 +144,33 @@ def recipe_edit(request, recipe_id):
     return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})
     
 
-def create_user(request):
-    context = {'pagename': 'Регистрация пользователя'}
-    if request.method == 'GET':
-        form = UserRegistrationForm()
-        context['form'] = form
-        return render(request, 'pages/registration.html', context)
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-        context['form'] = form
-        return render(request, 'pages/registration.html', context)
+# def create_user(request):
+#     context = {'pagename': 'Регистрация пользователя'}
+#     if request.method == 'GET':
+#         form = UserRegistrationForm()
+#         context['form'] = form
+#         return render(request, 'pages/registration.html', context)
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#         context['form'] = form
+#         return render(request, 'pages/registration.html', context)
+    
+
+class UserCreateView(CreateView):
+    model = User
+    form_class = UserRegistrationForm
+    template_name = 'pages/registration.html'
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = 'Регистрация'
+        return context
+
+
 
 
 def login(request):
