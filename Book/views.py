@@ -43,28 +43,6 @@ class MainRecipesListView(RecipesListView):
         return public_recipes if not self.request.user.is_authenticated else public_recipes | super().get_queryset().filter(author=self.request.user)
 
 
-# @login_required()
-# def my_recipes(request):
-#     recipes = Recipe.objects.filter(author=request.user)
-#     context = {
-#         'pagename': 'Мои рецепты',
-#         'recipes': recipes,
-#         'count': recipes.count()
-#         }
-#     return render(request, 'pages/view_recipes.html', context)
-
-
-# def recipes_page(request):
-#     public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
-#     recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
-#     context = {
-#         'pagename': 'Все рецепты',
-#         'recipes': recipes,
-#         'count': recipes.count()
-#         }
-#     return render(request, 'pages/view_recipes.html', context)
-
-
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     form_class = RecipeForm
     template_name = 'pages/add_recipe.html'
@@ -75,24 +53,11 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# @login_required()
-# def add_recipe_page(request):
-#     if request.method == 'GET':
-#         form = RecipeForm()
-#         context = {
-#             'pagename': 'Добавить рецепт',
-#             'form': form
-#         }
-#         return render(request, 'pages/add_recipe.html', context)    
-#     if request.method == 'POST':
-#         form = RecipeForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             recipe = form.save(commit=False)
-#             if request.user.is_authenticated:
-#                 recipe.author = request.user
-#                 recipe.save()
-#             return redirect('recipes-list')
-#         return render(request,'pages/add_recipe.html', {'form': form})
+
+
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = 'pages/recipe_detail.html'
 
 
 def recipe_detail(request, recipe_id):
@@ -102,23 +67,6 @@ def recipe_detail(request, recipe_id):
     else:
         raise Http404
     
-
-class RecipeDetailView(DetailView):
-    model = Recipe
-    template_name = 'pages/recipe_detail.html'
-
-    # def get_object(self):
-    #     recipe = super().get_object()
-        # if not recipe.private_choise == 'PB' or self.request.user == recipe.author:
-        #     raise Http404
-        # return recipe
-     
-
-def recipe_delete(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id)
-    recipe.delete()
-    return redirect('recipes-list')
-
 
 class RecipeUpdateView(UpdateView):
     model = Recipe
@@ -142,22 +90,15 @@ def recipe_edit(request, recipe_id):
             form.save()
         return redirect('recipe-detail', recipe_id=recipe.id)
     return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})
-    
 
-# def create_user(request):
-#     context = {'pagename': 'Регистрация пользователя'}
-#     if request.method == 'GET':
-#         form = UserRegistrationForm()
-#         context['form'] = form
-#         return render(request, 'pages/registration.html', context)
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#         context['form'] = form
-#         return render(request, 'pages/registration.html', context)
-    
+
+
+
+def recipe_delete(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    recipe.delete()
+    return redirect('recipes-list')
+
 
 class UserCreateView(CreateView):
     model = User
@@ -169,8 +110,6 @@ class UserCreateView(CreateView):
         context = super().get_context_data()
         context['title'] = 'Регистрация'
         return context
-
-
 
 
 def login(request):
@@ -191,3 +130,60 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('home')
+
+
+# @login_required()
+# def my_recipes(request):
+#     recipes = Recipe.objects.filter(author=request.user)
+#     context = {
+#         'pagename': 'Мои рецепты',
+#         'recipes': recipes,
+#         'count': recipes.count()
+#         }
+#     return render(request, 'pages/view_recipes.html', context)
+
+
+# def recipes_page(request):
+#     public_recipes = Recipe.objects.filter(private_choise=PrivateChoise.PUBLIC)
+#     recipes = public_recipes if not request.user.is_authenticated else public_recipes | Recipe.objects.filter(author=request.user)
+#     context = {
+#         'pagename': 'Все рецепты',
+#         'recipes': recipes,
+#         'count': recipes.count()
+#         }
+#     return render(request, 'pages/view_recipes.html', context)
+
+
+# @login_required()
+# def add_recipe_page(request):
+#     if request.method == 'GET':
+#         form = RecipeForm()
+#         context = {
+#             'pagename': 'Добавить рецепт',
+#             'form': form
+#         }
+#         return render(request, 'pages/add_recipe.html', context)    
+#     if request.method == 'POST':
+#         form = RecipeForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             recipe = form.save(commit=False)
+#             if request.user.is_authenticated:
+#                 recipe.author = request.user
+#                 recipe.save()
+#             return redirect('recipes-list')
+#         return render(request,'pages/add_recipe.html', {'form': form})
+
+
+# def create_user(request):
+#     context = {'pagename': 'Регистрация пользователя'}
+#     if request.method == 'GET':
+#         form = UserRegistrationForm()
+#         context['form'] = form
+#         return render(request, 'pages/registration.html', context)
+#     if request.method == 'POST':
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#         context['form'] = form
+#         return render(request, 'pages/registration.html', context)
