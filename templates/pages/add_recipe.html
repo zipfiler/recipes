@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if not recipe or request.user == recipe.author %}
 <div class="container">
     <div class="row">
         <div class="col text-left" style="margin-top: 10px; margin-bottom: 10px">
@@ -23,4 +24,5 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock  %}

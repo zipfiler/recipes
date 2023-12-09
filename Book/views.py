@@ -1,5 +1,6 @@
 from typing import Any
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -68,7 +69,7 @@ def recipe_detail(request, recipe_id):
         raise Http404
     
 
-class RecipeUpdateView(UpdateView):
+class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipe
     form_class = RecipeForm
     template_name = 'pages/add_recipe.html'
@@ -80,16 +81,16 @@ class RecipeUpdateView(UpdateView):
         return context
 
 
-def recipe_edit(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    if request.method == 'GET':
-        form = RecipeForm(instance=recipe)
-    if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES, instance=recipe)        
-        if form.is_valid():
-            form.save()
-        return redirect('recipe-detail', recipe_id=recipe.id)
-    return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})
+# def recipe_edit(request, recipe_id):
+#     recipe = get_object_or_404(Recipe, id=recipe_id)
+#     if request.method == 'GET':
+#         form = RecipeForm(instance=recipe)
+#     if request.method == 'POST':
+#         form = RecipeForm(request.POST, request.FILES, instance=recipe)        
+#         if form.is_valid():
+#             form.save()
+#         return redirect('recipe-detail', recipe_id=recipe.id)
+#     return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})
 
 
 
