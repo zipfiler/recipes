@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 
 from Book.models import Recipe, PrivateChoise
 from Book.forms import UserRegistrationForm, RecipeForm
@@ -75,15 +75,27 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'pages/add_recipe.html'
     success_url = reverse_lazy('recipes-list')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.user != kwargs['instance'].author:
+            return self.handle_no_permission()
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['title'] = 'Редактирование'
         return context
 
 
+class RecipeDeleteView(DeleteView):
+    model = Recipe
+    success_url = reverse_lazy('recipes-list')
+
+
 def recipe_delete(request, recipe_id):
     recipe = Recipe.objects.get(id=recipe_id)
-    recipe.delete()
+    if request.user == recipe.author:
+        recipe.delete()
     return redirect('recipes-list')
 
 
