@@ -36,12 +36,22 @@ class RecipesListView(ListView):
 class UserRecipesListView(LoginRequiredMixin, RecipesListView):
     def get_queryset(self):
         return super().get_queryset().filter(author=self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = context['pagename'] = 'Мои рецепты'
+        return context
 
 
 class MainRecipesListView(RecipesListView):
     def get_queryset(self):
         public_recipes = super().get_queryset().filter(private_choise=PrivateChoise.PUBLIC)
         return public_recipes if not self.request.user.is_authenticated else public_recipes | super().get_queryset().filter(author=self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['title'] = context['pagename'] = 'Все рецепты'
+        return context
 
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
@@ -54,20 +64,10 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-
-
 class RecipeDetailView(DetailView):
     model = Recipe
     template_name = 'pages/recipe_detail.html'
 
-
-def recipe_detail(request, recipe_id):
-    recipe = get_object_or_404(Recipe, id=recipe_id)
-    if recipe.private_choise == 'PB' or request.user == recipe.author:
-        return render(request, 'pages/recipe_detail.html', {'recipe': recipe})
-    else:
-        raise Http404
-    
 
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipe
@@ -79,20 +79,6 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         context = super().get_context_data()
         context['title'] = 'Редактирование'
         return context
-
-
-# def recipe_edit(request, recipe_id):
-#     recipe = get_object_or_404(Recipe, id=recipe_id)
-#     if request.method == 'GET':
-#         form = RecipeForm(instance=recipe)
-#     if request.method == 'POST':
-#         form = RecipeForm(request.POST, request.FILES, instance=recipe)        
-#         if form.is_valid():
-#             form.save()
-#         return redirect('recipe-detail', recipe_id=recipe.id)
-#     return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})
-
-
 
 
 def recipe_delete(request, recipe_id):
@@ -188,3 +174,21 @@ def logout(request):
 #             return redirect('home')
 #         context['form'] = form
 #         return render(request, 'pages/registration.html', context)
+
+# def recipe_detail(request, recipe_id):
+#     recipe = get_object_or_404(Recipe, id=recipe_id)
+#     if recipe.private_choise == 'PB' or request.user == recipe.author:
+#         return render(request, 'pages/recipe_detail.html', {'recipe': recipe})
+#     else:
+#         raise Http404
+
+# def recipe_edit(request, recipe_id):
+#     recipe = get_object_or_404(Recipe, id=recipe_id)
+#     if request.method == 'GET':
+#         form = RecipeForm(instance=recipe)
+#     if request.method == 'POST':
+#         form = RecipeForm(request.POST, request.FILES, instance=recipe)        
+#         if form.is_valid():
+#             form.save()
+#         return redirect('recipe-detail', recipe_id=recipe.id)
+#     return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})

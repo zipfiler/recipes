@@ -2,8 +2,7 @@
 
 
 {% block content %}
-<!-- Begin page content -->
-
+{% if recipe.private_choise == 'PB' or request.user == recipe.author %}
 <div class="container">
     <div class="row">
         <div class="col">
@@ -56,5 +55,5 @@
     </div>
         <br>
 </div>
-
+{% endif %}
 {% endblock %}
