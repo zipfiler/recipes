@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<div class="card mb-3 border-0 nth-shadow">
+
+    <div class="card-body">
+
+        <div class="card-title nth-card-title">
+
+            <h4>Удаление</h4>
+
+        </div>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="alert alert-warning" role="alert">
+
+                Вы действительно хотите удалить <strong>{{ recipe.title }}</strong>?
+
+            </div>
+
+            <div class="d-grid gap-2 d-md-block mt-2">
+
+                <button type="submit" class="btn btn-dark">Удалить</button>
+
+                <a href="{{ recipe.get_absolute_url }}" class="btn btn-primary">Отмена</a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

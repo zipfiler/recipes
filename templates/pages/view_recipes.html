@@ -13,28 +13,23 @@
                 <thead class="thead-light">
                 <tr>
                     <th scope="col">Название</th>
+                    <th scope="col">Тип</th>
                     <th scope="col">Дата создания</th>
                     <th scope="col">Автор</th>
-                    <th scope="col">Тип</th>
+                    {% if request.user.is_authenticated %}<th scope="col">Статус</th>{% endif %}
                 </tr>
                 </thead>
                 <tbody>
                     {% for recipe in object_list %}
                     <tr>
                         <td><a href="{% url 'recipe-detail' recipe.id %}">{{ recipe.title }}</a>
-                            {% comment %} {% if request.user == recipe.author %}
-                            <a style="padding-left: 20px" href="{% url 'recipe-edit' recipe.id %}">
-                                <i style="color: grey" class="fas fa-edit"></i>
-                            </a>
-                            <a style="padding-left: 5px" href="{% url 'recipe-delete' recipe.id %}">
-                                <i style="color: grey" class="fa-solid fa-trash"></i>
-                            </a>
-                            
-                            {% endif %} {% endcomment %}
                         </td>
+                        <td>{{ recipe.type }}</td>   
                         <td>{{ recipe.published_date }}</td>
                         <td>{{ recipe.author.username }}</td>
-                        <td>{{ recipe.type }}</td>   
+                        {% if request.user.is_authenticated %}
+                        <td>{% if recipe.private_choise == 'PR' %}виден только мне{% else %}виден всем{% endif %}</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>

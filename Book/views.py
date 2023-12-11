@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import UpdateView, DeleteView, FormMixin
 
 from Book.models import Recipe, PrivateChoise
 from Book.forms import UserRegistrationForm, RecipeForm
@@ -68,6 +68,12 @@ class RecipeDetailView(DetailView):
     model = Recipe
     template_name = 'pages/recipe_detail.html'
 
+    def get(self, request, *args, **kwargs):
+        recipe = self.get_object()
+        if recipe.private_choise == 'PB' or request.user == recipe.author:
+            return super().get(request, *args, **kwargs)
+        raise Http404
+
 
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipe
@@ -87,16 +93,16 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class RecipeDeleteView(DeleteView):
+class RecipeDeleteView(LoginRequiredMixin, DeleteView):
     model = Recipe
+    template_name = 'pages/recipe_delete.html'
     success_url = reverse_lazy('recipes-list')
 
-
-def recipe_delete(request, recipe_id):
-    recipe = Recipe.objects.get(id=recipe_id)
-    if request.user == recipe.author:
-        recipe.delete()
-    return redirect('recipes-list')
+    def get(self, request, *args, **kwargs):
+        recipe = self.get_object()
+        if request.user == recipe.author:
+            return super().get(request, *args, **kwargs)
+        raise Http404
 
 
 class UserCreateView(CreateView):
@@ -204,3 +210,10 @@ def logout(request):
 #             form.save()
 #         return redirect('recipe-detail', recipe_id=recipe.id)
 #     return render(request, 'pages/add_recipe.html', {'form': form, 'recipe': recipe})
+
+# @login_required()
+# def recipe_delete(request, recipe_id):
+#     recipe = Recipe.objects.get(id=recipe_id)
+#     if request.user == recipe.author:
+#         recipe.delete()
+#     return redirect('recipes-list')
