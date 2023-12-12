@@ -1,11 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container">
-        <div class="row">
-            <div class="col text-center">
-                <h1>{{ pagename }}</h1>
-            </div>
-        </div>
+        <br>
         <div class="row">
             <div class="col">
                 {% if request.user.is_authenticated %}

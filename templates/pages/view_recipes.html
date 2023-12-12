@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col text-left" style="margin-top: 10px; margin-bottom: 10px">
-            <h3>{{ pagename }}</h3>
+            <h3>{{ title }}</h3>
         </div>
     </div>
     <div class="row">
@@ -34,9 +34,9 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <div align="right">
+            {% comment %} <div align="right">
                 <i style="color: gray;">Всего: {{ count }}</i>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
 </div>
