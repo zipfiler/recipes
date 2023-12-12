@@ -1,5 +1,6 @@
 from typing import Any
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
 from django.db import models
 from django.db.models.query import QuerySet
 from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
@@ -10,6 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.views.generic import CreateView
@@ -79,7 +81,9 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipe
     form_class = RecipeForm
     template_name = 'pages/add_recipe.html'
-    success_url = reverse_lazy('recipes-list')
+
+    def get_success_url(self):
+        return reverse_lazy('recipe-detail', args=(self.object.id,))
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -117,25 +121,34 @@ class UserCreateView(CreateView):
         return context
 
 
-def login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = auth.authenticate(request, username=username, password=password)
-        if user is not None:
-            auth.login(request, user)
-        else:
-            context = {
-                'errors': ['Неправильное имя или пароль']
-            }
-            return render(request, 'pages/index.html', context)
-    return redirect('home')
+class UserLoginView(LoginView):
+    template_name = 'pages/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['errors'] = 'Неправильное имя или пароль'
+        return context
+
+
+# def logout(request):
+#     auth.logout(request)
+#     return redirect('home')
+
+
+# def login(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         user = auth.authenticate(request, username=username, password=password)
+#         if user is not None:
+#             auth.login(request, user)
+#         else:
+#             context = {
+#                 'errors': ['Неправильное имя или пароль']
+#             }
+#             return render(request, 'pages/index.html', context)
+#     return redirect('home')
                 
-
-def logout(request):
-    auth.logout(request)
-    return redirect('home')
-
 
 # @login_required()
 # def my_recipes(request):

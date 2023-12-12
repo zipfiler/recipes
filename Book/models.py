@@ -12,7 +12,7 @@ TYPES = (
 
 
 class PrivateChoise(models.TextChoices):
-    PRIVATE = 'PR', 'Сохранить черновик (виден только мне)'
+    PRIVATE = 'PR', 'Сохранить черновик (виден мне)'
     PUBLIC = 'PB', 'Добавить рецепт (виден всем)'
 
 

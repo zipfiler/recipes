@@ -54,9 +54,9 @@
             </div>
                 {% if errors %}
                     <ul>
-                    {% for error in errors %}
-                        <li style="color: red">{{ error }}</li>
-                    {% endfor %}
+                    {% comment %} {% for error in errors %} {% endcomment %}
+                        <li style="color: red">{{ errors }}</li>
+                    {% comment %} {% endfor %} {% endcomment %}
                     </ul>
                 {% endif %}
             {% endif %}

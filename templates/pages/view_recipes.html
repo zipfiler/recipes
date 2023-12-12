@@ -28,7 +28,7 @@
                         <td>{{ recipe.published_date }}</td>
                         <td>{{ recipe.author.username }}</td>
                         {% if request.user.is_authenticated %}
-                        <td>{% if recipe.private_choise == 'PR' %}виден только мне{% else %}виден всем{% endif %}</td>
+                        <td>{% if recipe.private_choise == 'PR' %}виден мне{% else %}виден всем{% endif %}</td>
                         {% endif %}
                     </tr>
                     {% endfor %}
