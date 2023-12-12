@@ -80,9 +80,9 @@ WSGI_APPLICATION = 'Recipes.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "recipes_db",
-        "USER": "recipes_username",
-        "PASSWORD": "recipes_password",
+        "NAME": "recipe_db",
+        "USER": "recipe_username",
+        "PASSWORD": "recipe_password",
         "HOST": "localhost",
         "PORT": "5432",
     }
@@ -139,6 +139,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Users
+
+AUTH_USER_MODEL = 'Book.User'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

@@ -1,5 +1,5 @@
 from typing import Any
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.db import models
 from django.db.models.query import QuerySet
@@ -17,7 +17,7 @@ from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView, DeleteView, FormMixin
 
-from Book.models import Recipe, PrivateChoise
+from Book.models import Recipe, PrivateChoise, User
 from Book.forms import UserRegistrationForm, RecipeForm
 from common.views import CommonContextMixin
 
