@@ -1,5 +1,4 @@
 from typing import Any
-# from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.db import models
 from django.db.models.query import QuerySet
@@ -8,7 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
@@ -17,7 +16,7 @@ from django.views.generic import DetailView
 from django.views.generic import CreateView
 from django.views.generic.edit import UpdateView, DeleteView, FormMixin
 
-from Book.models import Recipe, PrivateChoise, User
+from Book.models import Recipe, PrivateChoise, User, EmailVerification
 from Book.forms import UserRegistrationForm, RecipeForm
 from common.views import CommonContextMixin
 
@@ -114,3 +113,19 @@ class UserLoginView(LoginView):
         context = super().get_context_data()
         context['errors'] = 'Неправильное имя или пароль'
         return context
+
+
+class EmailVerificationView(CommonContextMixin, TemplateView):
+    title = 'Подтверждение электронной почты'
+    template_name = 'pages/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        code = kwargs['code']
+        user = User.objects.get(email=kwargs['email'])
+        email_verifications = EmailVerification.objects.filter(user=user, code=code)
+        if email_verifications.exists() and not email_verifications.first().is_expired():
+            user.is_verified_email = True
+            user.save()
+            return super(EmailVerificationView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('home'))
