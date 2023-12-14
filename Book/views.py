@@ -1,23 +1,14 @@
-from typing import Any
-from django.contrib.auth.forms import AuthenticationForm
-from django.db import models
-from django.db.models.query import QuerySet
-from django.http import Http404, HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import auth
-from django.core.exceptions import ObjectDoesNotExist
-from django.urls import reverse_lazy, reverse
-from django.views.generic.base import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DetailView
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import DeleteView, UpdateView
 from django.views.generic.list import ListView
-from django.views.generic import DetailView
-from django.views.generic import CreateView
-from django.views.generic.edit import UpdateView, DeleteView, FormMixin
 
-from Book.models import Recipe, PrivateChoise, User, EmailVerification
-from Book.forms import UserRegistrationForm, RecipeForm
+from Book.forms import RecipeForm, UserRegistrationForm
+from Book.models import EmailVerification, PrivateChoise, Recipe, User
 from common.views import CommonContextMixin
 
 
@@ -51,7 +42,7 @@ class RecipeCreateView(LoginRequiredMixin, CommonContextMixin, CreateView):
     template_name = 'pages/add_recipe.html'
     success_url = reverse_lazy('recipes-list')
     title = 'Добавить рецепт'
-    
+
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)

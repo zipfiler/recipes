@@ -1,6 +1,6 @@
 from django.contrib import admin
-from Book.models import Recipe, EmailVerification, User
 
+from Book.models import EmailVerification, Recipe, User
 
 admin.site.register(Recipe)
 

@@ -1,7 +1,7 @@
 from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
+from django.db import models
 from django.urls import reverse
 from django.utils.timezone import now
 
@@ -40,7 +40,7 @@ class Recipe(models.Model):
         choices=PrivateChoise.choices,
         default=PrivateChoise.PUBLIC,
     )
-    
+
     def __str__(self):
         return f'{self.title}. Автор: {self.author}'
 
