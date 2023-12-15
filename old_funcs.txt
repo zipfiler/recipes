@@ -1,3 +1,4 @@
+# SECRET_KEY='django-insecure-cwjy#p=6ih!-yjwqby-zi2v-ya0=#ff($gy-ugt!u17c0=np9f'
 
 # def logout(request):
 #     auth.logout(request)
