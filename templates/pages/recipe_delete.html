@@ -12,8 +12,8 @@
                 Вы действительно хотите удалить <strong>{{ recipe.title }}</strong>?
             </div>
             <div class="d-grid gap-2 d-md-block mt-2">
-                <button type="submit" class="btn btn-dark">Удалить</button>
-                <a href="{{ recipe.get_absolute_url }}" class="btn btn-primary">Отмена</a>
+                <button type="submit" class="btn btn-outline-danger">Удалить</button>
+                <a href="{% url 'recipe-detail' recipe.id %}" class="btn btn-primary">Отмена</a>
             </div>
         </form>
     </div>

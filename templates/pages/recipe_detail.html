@@ -46,8 +46,8 @@
         </fieldset>
         <br>
                 {% if request.user == recipe.author %}
-                    <button type="button" class="btn btn-outline-secondary btn-sm"><a style="color: black" href="{% url 'recipe-edit' recipe.id %}">Редактировать</a></button>
-                    <button type="button" class="btn btn-outline-danger btn-sm"><a style="color: darkred" href="{% url 'recipe-delete' recipe.id %}">Удалить</a></button>
+                    <button type="button" class="btn btn-outline-secondary"><a style="color: black" href="{% url 'recipe-edit' recipe.id %}">Редактировать</a></button>
+                    <button type="button" class="btn btn-outline-danger"><a style="color: darkred" href="{% url 'recipe-delete' recipe.id %}">Удалить</a></button>
                 {% endif %}
         </div>
     </div>

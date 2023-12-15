@@ -10,10 +10,38 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import environ
+import os
 from pathlib import Path
+
+
+env = environ.Env(
+    DEBUG=(bool),
+    SECRET_KEY=(str),
+    DOMAIN_NAME=(str),
+
+    REDIS_HOST=(str),
+    REDIS_PORT=(str),
+
+    DATABASE_NAME=(str),
+    DATABASE_USER=(str),
+    DATABASE_PASSWORD=(str),
+    DATABASE_HOST=(str),
+    DATABASE_PORT=(str),
+
+    EMAIL_HOST=(str),
+    EMAIL_PORT=(int),
+    EMAIL_HOST_USER=(str),
+    EMAIL_HOST_PASSWORD=(str),
+    EMAIL_USE_SSL=(bool),
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(BASE_DIR / '.env')
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -79,10 +107,17 @@ INTERNAL_IPS = [
     'localhost',
 ]
 
+# Redis
+
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = '6379'
+
+# Caches
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -95,13 +130,13 @@ CACHES = {
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "recipe_db",
-        "USER": "recipe_username",
-        "PASSWORD": "recipe_password",
-        "HOST": "localhost",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'recipe_db',
+        'USER': 'recipe_username',
+        'PASSWORD': 'recipe_password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -166,14 +201,17 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Sending emails
 
-EMAIL_HOST = 'smtp.yandex.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'zipf-confirm@yandex.ru'
-EMAIL_HOST_PASSWORD = 'hvyztawtyrskgyuk'
-EMAIL_USE_SSL = True
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = 'smtp.yandex.com'
+    EMAIL_PORT = 465
+    EMAIL_HOST_USER = 'zipf-confirm@yandex.ru'
+    EMAIL_HOST_PASSWORD = 'hvyztawtyrskgyuk'
+    EMAIL_USE_SSL = True
 
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
