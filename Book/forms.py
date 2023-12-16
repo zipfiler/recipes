@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Textarea, TextInput
-from django.utils.timezone import now
 
 from Book.models import Recipe, User
 from Book.tasks import send_email_verification

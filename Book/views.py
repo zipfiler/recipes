@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView
@@ -89,11 +90,12 @@ class RecipeDeleteView(LoginRequiredMixin, CommonContextMixin, DeleteView):
         raise Http404
 
 
-class UserCreateView(CommonContextMixin, CreateView):
+class UserCreateView(SuccessMessageMixin, CommonContextMixin, CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'pages/registration.html'
     success_url = reverse_lazy('home')
+    success_message = 'Вы успешно зарегистрированы!'
     title = 'Регистрация'
 
 
