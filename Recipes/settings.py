@@ -32,6 +32,7 @@ env = environ.Env(
     EMAIL_PORT=(int),
     EMAIL_HOST_USER=(str),
     EMAIL_HOST_PASSWORD=(str),
+    EMAIL_USE_TLS=(bool),
     EMAIL_USE_SSL=(bool),
 )
 
@@ -178,10 +179,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-  BASE_DIR / 'static'
-]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+if DEBUG:
+    STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+    ]
+else:
+    STATIC_ROOT = BASE_DIR / 'static'
 
 
 MEDIA_URL = '/media/'
@@ -207,6 +210,7 @@ EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_USE_SSL = env('EMAIL_USE_SSL')
 
 
