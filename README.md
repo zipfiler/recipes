@@ -1,1 +1,1 @@
-## Проект развёрнут на https://vkusnonetochno.ru
+Проект развёрнут на https://vkusnonetochno.ru
